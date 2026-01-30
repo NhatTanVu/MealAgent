@@ -99,7 +99,8 @@ async def ingest_recipe(
         source_url=source_url,
         cook_time=30,
         servings=2,
-        steps="\n".join(steps)
+        steps="\n".join(steps),
+        raw=raw_text
     )
 
     db.add(db_recipe)
@@ -107,7 +108,10 @@ async def ingest_recipe(
 
     db_ingredients = [
         Ingredient(
-            name=ingredient,
+            raw=ingredient["raw"],
+            name=ingredient["name"],
+            amount=ingredient.get("amount"),
+            unit=ingredient.get("unit"),
             recipe_id=db_recipe.id
         )
         for ingredient in ingredients
@@ -121,7 +125,7 @@ async def ingest_recipe(
     return RecipeResponse(
         id=db_recipe.id,
         title=title,
-        ingredients=ingredients,
+        ingredients=[i["raw"] for i in ingredients],
         steps=steps,
         source_url=source_url,
         cook_time=30,

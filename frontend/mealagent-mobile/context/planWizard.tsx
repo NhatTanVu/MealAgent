@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState } from "react";
 
 export type PlanInputs = {
-    ingredients: string[];
+    ingredients: { name: string; amount: number; unit: string }[];
     timeAvailable: number;
     servings: number;
 }

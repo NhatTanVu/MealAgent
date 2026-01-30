@@ -10,7 +10,11 @@ export default function PlanStep1() {
     const addIngredient = () => {
         const v = ingredientText.trim();
         if (!v) return;
-        setInputs({ ...inputs, ingredients: [...inputs.ingredients, v.toLowerCase()] });
+        setInputs({ ...inputs, ingredients: [...inputs.ingredients, {
+            name: v.toLowerCase(),
+            amount: 0,
+            unit: ""
+        }] });
         setIngredientText("");
     };
     const { inputs, setInputs } = usePlanWizard();
@@ -41,7 +45,7 @@ export default function PlanStep1() {
                     autoCapitalize="none"
                     onSubmitEditing={addIngredient}
                 />
-                <Pressable onPress={addIngredient}>
+                <Pressable onPress={addIngredient} style={styles.addBtn}>
                     <ThemedText style={styles.addBtnText}>Add</ThemedText>
                 </Pressable>
             </ThemedView>
@@ -49,8 +53,8 @@ export default function PlanStep1() {
             <ThemedView style={styles.chips}>
                 {
                     inputs.ingredients.map((ing, idx) => (
-                        <Pressable key={`${ing}-${idx}`} onPress={() => removeIngredient(idx)} style={styles.chip}>
-                            <ThemedText>ing ✕</ThemedText>
+                        <Pressable key={`${ing.name}-${idx}`} onPress={() => removeIngredient(idx)} style={styles.chip}>
+                            <ThemedText>{ing.name} ✕</ThemedText>
                         </Pressable>
                     ))
                 }
@@ -81,6 +85,9 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1, borderWidth: 1, borderColor: "#ccc", borderRadius: 8, padding: 12
+    },
+    addBtn: { 
+        backgroundColor: "#1565C0", paddingVertical: 12, paddingHorizontal: 14, borderRadius: 8 
     },
     addBtnText: {
         color: "#fff", fontWeight: "600"

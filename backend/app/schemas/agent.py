@@ -14,3 +14,19 @@ class AgentResponse(BaseModel):
     recipe: str
     grocery_list: List[str]
     steps: List[str]
+
+
+class PlanRequest(BaseModel):
+    ingredients: List[dict]
+    timeAvailable: int
+    servings: int
+
+
+class PlanCandidate(BaseModel):
+    id: int
+    title: str
+    score_reason: str
+
+
+class PlanResponse(BaseModel):
+    candidates: List[PlanCandidate]

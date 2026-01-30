@@ -9,6 +9,7 @@ class Recipe(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     source_url = Column(String, nullable=True)
+    raw = Column(String, nullable=False)
     cook_time = Column(Integer)  # minutes
     servings = Column(Integer)
     steps = Column(Text)

@@ -1,6 +1,7 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { usePlanWizard } from "@/context/planWizard";
+import { api } from "@/services/api";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet } from "react-native";
@@ -30,23 +31,23 @@ export default function PlanStep2() {
     };
 
     useEffect(() => {
-        // ✅ Replace with your real backend endpoint later
-        // Example: POST /agent/plan with inputs
-        // const res = await fetch(`${API_BASE_URL}/agent/plan`, { method:"POST", headers:{...}, body: JSON.stringify(inputs) })
-        // const data = await res.json()
+        const loadCandidates = async () => {
+            setLoading(true);
+            const res = await api.post("/agent/plan", inputs);
+            const data = await res.data["candidates"] as [];
 
-        // Hackathon mock (still demonstrates wizard)
-        try {
-            const data = [
-                { id: 1, title: "Chicken Stir Fry", scoreReason: "High ingredient overlap • ~25 min" },
-                { id: 2, title: "Pasta Aglio e Olio", scoreReason: "Fast • Few missing ingredients" },
-                { id: 3, title: "Veggie Omelette", scoreReason: "Very quick • Great for leftovers" },
-            ]
-
-            setCandidates(data);
-        } finally {
-            setLoading(false);
-        }
+            try {
+                console.log(data);
+                setCandidates(data.map((d) => ({
+                    "id": d["id"],
+                    "title": d["title"],
+                    "scoreReason": d["score_reason"]
+                })));
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadCandidates();
     }, []);
 
     if (loading) {
