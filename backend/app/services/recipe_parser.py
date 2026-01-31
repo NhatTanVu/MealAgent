@@ -13,12 +13,32 @@ def parse_recipe_from_text(text: str) -> dict:
     prompt = f"""
     You are a cooking assistant
     
-    Extract a recipe from the text below.
+    Extract a recipe from the text below and normalize it into structured data.
 
-    Return in JSON format with keys:
-    - title (string)
-    - ingredients (list of strings)
-    - steps (list of strings)
+    Rules:
+    - Return VALID JSON only (no markdown, no explanations).
+    - Do not invent data.
+    - Each ingredient must include:
+      - raw: the original ingredient text exactly as written
+      - name: ingredient name only, lowercase, no descriptors
+      - amount: number, convert fractions to decimals, or null
+      - unit: singular form (cup, tbsp, g, ml), or null
+    - Remove preparation notes from `name` (e.g. "room temperature", "chopped").
+    - Steps should be clear, concise strings.
+
+    Return JSON with this exact schema:
+    {{
+        "title": string,
+        "ingredients": [
+            {{
+                "raw": string,
+                "name": string,
+                "amount": number | null,
+                "unit": string | null
+            }}
+        ],
+        "steps": [string]
+    }}
 
     Text:
     {text}
